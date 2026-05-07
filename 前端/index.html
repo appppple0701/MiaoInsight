@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>妙算 - 宮廟活動人流與決策分析系統</title>
+    <style>
+        /* 基本樣式設定 */
+        body {
+            font-family: "Microsoft JhengHei", "PingFang TC", sans-serif;
+            background-color: #F2EBE1; /* 暖米色，具宮廟文化感 */
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            text-align: center;
+            width: 80%;
+            max-width: 1000px;
+        }
+
+        /* 標題區塊 */
+        .header {
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            color: #8B0000; /* 深紅色 */
+            font-size: 3rem;
+            border-bottom: 4px solid #FFD700; /* 金色裝飾線 */
+            display: inline-block;
+            padding-bottom: 15px;
+            font-weight: 900;
+            letter-spacing: 5px;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: #555;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        /* 模式選擇容器 */
+        .mode-selection {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+        }
+
+        /* 模式卡片樣式 */
+        .card {
+            background: white;
+            padding: 50px 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            flex: 1;
+            max-width: 400px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: #333;
+            border: 3px solid transparent;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* 滑鼠懸停效果 */
+        .card:hover {
+            transform: translateY(-15px);
+            border-color: #FFD700;
+            box-shadow: 0 15px 40px rgba(139, 0, 0, 0.15);
+        }
+
+        .card h2 {
+            color: #8B0000;
+            margin: 15px 0;
+            font-size: 1.8rem;
+            font-weight: 800;
+        }
+
+        .card p {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            color: #666;
+            text-align: center;
+        }
+
+        .icon {
+            font-size: 60px;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.1));
+        }
+
+        /* 響應式設定 */
+        @media (max-width: 768px) {
+            .mode-selection {
+                flex-direction: column;
+                align-items: center;
+            }
+            .card {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1>妙算</h1>
+            <p>AI 驅動的宮廟活動決策助手</p>
+        </div>
+
+        <div class="mode-selection">
+            <a href="/simple" class="card">
+                <span class="icon"></span>
+                <h2>簡易模式</h2>
+                <p>直接輸入活動參數（預算、工作人員等），快速獲得 AI 人流預測與廣告投放建議。</p>
+            </a>
+
+            <a href="/idea" class="card">
+                <span class="icon"></span>
+                <h2>建議模式</h2>
+                <p>輸入您的創意活動想法，由 AI 結合歷史大數據為您進行全方位的可行性評估。</p>
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>

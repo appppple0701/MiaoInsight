@@ -1,0 +1,144 @@
+<!-- 建議模式 -->
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>建議模式 - 宮廟決策助手</title>
+    <style>
+        body {
+            background-color: #F2EBE1;
+            font-family: "Microsoft JhengHei", sans-serif;
+            margin: 0; display: flex; height: 100vh;
+        }
+
+        /* 左側：對話紀錄 */
+        .sidebar-history {
+            width: 20%; background: #8B0000; color: white;
+            padding: 20px; display: flex; flex-direction: column;
+        }
+        .new-chat-btn {
+            background: #FFD700; color: #8B0000; border: none;
+            padding: 12px; border-radius: 8px; font-weight: 900;
+            cursor: pointer; margin-bottom: 20px;
+        }
+        .history-item {
+            padding: 12px; border-bottom: 1px solid #a52a2a;
+            cursor: pointer; font-size: 0.9rem; opacity: 0.8;
+        }
+        .history-item:hover { opacity: 1; background: #a52a2a; }
+
+        /* 中間：對話區 */
+        .chat-container {
+            flex: 1; display: flex; flex-direction: column;
+            background: white; margin: 20px; border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow: hidden;
+        }
+
+        .chat-messages {
+            flex: 1; padding: 20px; overflow-y: auto;
+            display: flex; flex-direction: column; gap: 15px;
+        }
+
+        /* 對話氣泡 */
+        .message { max-width: 80%; padding: 12px 18px; border-radius: 15px; line-height: 1.5; }
+        .bot { align-self: flex-start; background: #F2EBE1; color: #333; }
+        .user { align-self: flex-end; background: #8B0000; color: white; }
+
+        /* 下方輸入區 */
+        .input-area {
+            padding: 20px; border-top: 1px solid #eee;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .input-wrapper {
+            flex: 1; display: flex; align-items: center;
+            background: #f9f9f9; border: 2px solid #ddd;
+            border-radius: 25px; padding: 5px 15px;
+        }
+        input[type="text"] {
+            flex: 1; border: none; background: transparent;
+            padding: 10px; outline: none; font-size: 1rem;
+        }
+        .icon-btn {
+            background: none; border: none; font-size: 1.5rem;
+            cursor: pointer; color: #8B0000; transition: transform 0.2s;
+        }
+        .icon-btn:hover { transform: scale(1.1); }
+        
+        .send-btn {
+            background: #8B0000; color: white; border: none;
+            width: 40px; height: 40px; border-radius: 50%;
+            cursor: pointer; font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar-history">
+        <button class="new-chat-btn" onclick="startNewChat()">+ 開啟新對話</button>
+        <div class="sidebar-title" style="font-weight: 800; margin-bottom: 10px;">歷史對話</div>
+        <div class="history-item">2025 乞龜活動優化建議</div>
+        <div class="history-item">中元普渡人流預測分析</div>
+        <div class="history-item">新春點燈活動創意構想</div>
+    </div>
+
+    <div class="chat-container">
+        <div class="chat-messages" id="chatBox">
+            <div class="message bot">
+                您好，請直接在對話框中輸入任何點子或是活動的改善方向，例如:<br>
+                     「增加點燈活動，並在廣場發放結緣品能為乞龜活動增加多少人流?」<br>
+                     「我想舉辦一個雙塔登高活動，希望能增加本廟的知名度，請給我一些建議。」<br>
+                 也可以按下📖 選擇特定歷史活動，我將結合大數據模型與即時資訊為您提供建議。
+            </div>
+        </div>
+
+        <div class="input-area">
+            <button class="icon-btn" title="上傳附件">＋</button>
+            <button class="icon-btn" title="選擇歷史活動" onclick="toggleEventList()">📖</button>
+            
+            <div class="input-wrapper">
+                <input type="text" id="userInput" placeholder="描述您的活動想法...">
+                <button class="send-btn" onclick="sendMessage()">➤</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const chatBox = document.getElementById('chatBox');
+            
+            if (input.value.trim() === "") return;
+
+            // 1. 顯示使用者訊息
+            const userDiv = document.createElement('div');
+            userDiv.className = 'message user';
+            userDiv.textContent = input.value;
+            chatBox.appendChild(userDiv);
+
+            // 2. 模擬機器人回覆 (之後接 API)
+            setTimeout(() => {
+                const botDiv = document.createElement('div');
+                botDiv.className = 'message bot';
+                botDiv.textContent = "正在分析您的想法並結合最新新聞資料... (這部分將接上 LLM API)";
+                chatBox.appendChild(botDiv);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 1000);
+
+            input.value = "";
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function startNewChat() {
+            location.reload(); // 簡單實作：重整頁面即為新對話
+        }
+
+        function toggleEventList() {
+            alert("此處將開啟下拉選單，讓您選擇已有的活動數據作為分析基準。");
+        }
+    </script>
+    <a href="/" style="position: fixed; bottom: 20px; left: 20px; background-color: #8B0000; color: #FFD700; width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; text-decoration: none; font-size: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 9999; border: 2px solid #FFD700;">
+    🏠
+    </a>
+</body>
+</html>
