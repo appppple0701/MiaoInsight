@@ -5,7 +5,8 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
     <title>AI 活動人流預測系統</title>
 
@@ -312,6 +313,7 @@
         }
 
         .hidden {
+
             display: none;
         }
 
@@ -350,7 +352,7 @@
 <body>
 
     <!-- =========================================
-         LEFT SIDEBAR
+         LEFT
     ========================================= -->
 
     <div class="sidebar-left">
@@ -366,27 +368,15 @@
             </div>
 
             <ul>
+
                 <li>Attendance Forecast</li>
+
                 <li>Timeline Prediction</li>
-                <li>ROI Optimization</li>
-                <li>Feature Importance</li>
-                <li>Reward Simulation</li>
+
+                <li>Bootstrap Confidence</li>
+
                 <li>Trend Analysis</li>
-            </ul>
 
-        </div>
-
-        <div class="menu-box">
-
-            <div class="menu-title">
-                模型
-            </div>
-
-            <ul>
-                <li>XGBoost Temporal Forecast</li>
-                <li>Bootstrap Confidence Interval</li>
-                <li>Social Trend Dynamics</li>
-                <li>Reward Growth Simulation</li>
             </ul>
 
         </div>
@@ -394,12 +384,10 @@
     </div>
 
     <!-- =========================================
-         MAIN CONTENT
+         CENTER
     ========================================= -->
 
     <div class="main-content">
-
-        <!-- TOP -->
 
         <div class="top-card">
 
@@ -407,27 +395,33 @@
                 AI 預測 Attendance
             </div>
 
-            <div class="prediction-value" id="predictionValue">
+            <div class="prediction-value"
+                 id="predictionValue">
+
                 --
+
             </div>
 
-            <div class="confidence" id="confidenceText">
+            <div class="confidence"
+                 id="confidenceText">
+
                 95% 信賴區間：--
-            </div>
 
-            <!-- METRICS -->
+            </div>
 
             <div class="metric-grid">
 
                 <div class="metric-card">
 
                     <div class="metric-label">
-                        最佳化預測
+                        預測人數
                     </div>
 
                     <div class="metric-value"
                          id="optimizedPrediction">
+
                         --
+
                     </div>
 
                 </div>
@@ -435,12 +429,14 @@
                 <div class="metric-card">
 
                     <div class="metric-label">
-                        預期提升
+                        成長率
                     </div>
 
                     <div class="metric-value"
                          id="improvementPct">
+
                         --
+
                     </div>
 
                 </div>
@@ -453,7 +449,9 @@
 
                     <div class="metric-value"
                          id="topDriver">
+
                         --
+
                     </div>
 
                 </div>
@@ -466,7 +464,9 @@
 
                     <div class="metric-value"
                          id="rewardValue">
+
                         --
+
                     </div>
 
                 </div>
@@ -479,19 +479,15 @@
 
         <div class="chart-grid">
 
-            <!-- ROI -->
-
             <div class="chart-card">
 
                 <div class="chart-title">
-                    ROI Optimization
+                    Prediction Comparison
                 </div>
 
                 <canvas id="roiChart"></canvas>
 
             </div>
-
-            <!-- IMPORTANCE -->
 
             <div class="chart-card">
 
@@ -520,7 +516,7 @@
     </div>
 
     <!-- =========================================
-         RIGHT SIDEBAR
+         RIGHT
     ========================================= -->
 
     <div class="sidebar-right">
@@ -567,32 +563,44 @@
         </div>
 
         <div class="input-group">
+
             <label>活動前幾天</label>
+
             <input type="number"
                    id="days_before_event"
                    value="30">
+
         </div>
 
         <div class="input-group">
+
             <label>Weather Score</label>
+
             <input type="number"
                    step="0.01"
                    id="weather_score"
                    value="0.9">
+
         </div>
 
         <div class="input-group">
+
             <label>Holiday Score</label>
+
             <input type="number"
                    id="holiday_score"
                    value="1">
+
         </div>
 
         <div class="input-group">
+
             <label>Venue Capacity</label>
+
             <input type="number"
                    id="venue_capacity"
                    value="5000">
+
         </div>
 
         <!-- SOCIAL -->
@@ -602,56 +610,74 @@
         </div>
 
         <div class="input-group">
+
             <label>IG Exposure</label>
+
             <input type="number"
                    id="ig_exposure"
                    value="30000">
+
         </div>
 
         <div class="input-group">
+
             <label>FB Exposure</label>
+
             <input type="number"
                    id="fb_exposure"
                    value="50000">
+
         </div>
 
         <div class="input-group">
+
             <label>Threads Exposure</label>
+
             <input type="number"
                    id="threads_exposure"
                    value="10000">
+
         </div>
 
         <div class="input-group">
+
             <label>Trend Velocity</label>
+
             <input type="number"
                    id="trend_velocity"
                    value="5000">
+
         </div>
 
-        <!-- REWARD -->
+        <!-- MARKETING -->
 
         <div class="section-title">
-            Reward & Marketing
+            Marketing
         </div>
 
         <div class="input-group">
+
             <label>Reward Score</label>
+
             <input type="number"
                    step="0.01"
                    id="reward_score"
                    value="0.5">
+
         </div>
 
         <div class="input-group">
+
             <label>Marketing Push</label>
+
             <input type="number"
                    step="0.01"
                    id="marketing_push_score"
                    value="0.6">
+
         </div>
 
-        <!-- REGISTRATION -->
+        <!-- REG -->
 
         <div id="registrationFields">
 
@@ -660,40 +686,55 @@
             </div>
 
             <div class="input-group">
+
                 <label>Registration Count</label>
+
                 <input type="number"
                        id="registration_count"
                        value="3000">
+
             </div>
 
             <div class="input-group">
+
                 <label>Registration Growth</label>
+
                 <input type="number"
                        id="registration_growth_rate"
                        value="200">
+
             </div>
 
             <div class="input-group">
+
                 <label>Historical Show Rate</label>
+
                 <input type="number"
                        step="0.01"
                        id="historical_show_rate"
                        value="0.88">
+
             </div>
 
             <div class="input-group">
+
                 <label>Duration Hours</label>
+
                 <input type="number"
                        id="duration_hours"
-                       value="5">
+                       value="6">
+
             </div>
 
             <div class="input-group">
+
                 <label>Influencer Score</label>
+
                 <input type="number"
                        step="0.01"
                        id="influencer_score"
                        value="0.7">
+
             </div>
 
         </div>
@@ -708,53 +749,69 @@
             </div>
 
             <div class="input-group">
+
                 <label>Nearby Foot Traffic</label>
+
                 <input type="number"
                        id="nearby_foot_traffic"
                        value="50000">
+
             </div>
 
             <div class="input-group">
+
                 <label>Foot Traffic Growth</label>
+
                 <input type="number"
                        id="foot_traffic_growth"
                        value="3000">
+
             </div>
 
             <div class="input-group">
+
                 <label>Venue Visibility</label>
+
                 <input type="number"
                        step="0.01"
                        id="venue_visibility_score"
                        value="0.9">
+
             </div>
 
             <div class="input-group">
+
                 <label>Booth Count</label>
+
                 <input type="number"
                        id="booth_count"
                        value="40">
+
             </div>
 
             <div class="input-group">
+
                 <label>Live Performance</label>
+
                 <input type="number"
                        step="0.01"
                        id="live_performance_score"
                        value="0.8">
+
             </div>
 
             <div class="input-group">
+
                 <label>Transport Accessibility</label>
+
                 <input type="number"
                        step="0.01"
                        id="transport_accessibility"
                        value="0.9">
+
             </div>
 
         </div>
-
-        <!-- BUTTON -->
 
         <button class="btn-run"
                 onclick="runPrediction()">
@@ -811,10 +868,18 @@
                 );
 
                 category.innerHTML = `
-                    <option value="演唱會">演唱會</option>
-                    <option value="研討會">研討會</option>
-                    <option value="工作坊">工作坊</option>
-                    <option value="競賽">競賽</option>
+
+                    <option value="歌唱比賽">
+                        歌唱比賽
+                    </option>
+
+                    <option value="書法">
+                        書法
+                    </option>
+
+                    <option value="天赦日">
+                        天赦日
+                    </option>
                 `;
 
             } else {
@@ -828,9 +893,22 @@
                 );
 
                 category.innerHTML = `
-                    <option value="乞龜">乞龜</option>
-                    <option value="event_1">event_1</option>
-                    <option value="event_2">event_2</option>
+
+                    <option value="乞龜">
+                        乞龜
+                    </option>
+
+                    <option value="關公誕辰">
+                        關公誕辰
+                    </option>
+
+                    <option value="盂蘭盆節">
+                        盂蘭盆節
+                    </option>
+
+                    <option value="新春團拜">
+                        新春團拜
+                    </option>
                 `;
             }
         }
@@ -905,7 +983,7 @@
                     ),
 
                 trend_velocity:
-                    parseFloat(
+                    parseInt(
                         document.getElementById(
                             "trend_velocity"
                         ).value
@@ -925,8 +1003,6 @@
                         ).value
                     )
             };
-
-            // REGISTRATION
 
             if (
                 eventType ===
@@ -1028,13 +1104,14 @@
                     buildPayload();
 
                 // =====================================
-                // SINGLE PREDICTION
+                // PREDICT
                 // =====================================
 
                 const response =
                     await fetch(
                         "http://127.0.0.1:8000/predict",
                         {
+
                             method: "POST",
 
                             headers: {
@@ -1052,10 +1129,8 @@
                 const data =
                     await response.json();
 
-                console.log(data);
-
                 // =====================================
-                // MAIN RESULT
+                // MAIN
                 // =====================================
 
                 document.getElementById(
@@ -1071,50 +1146,17 @@
                 document.getElementById(
                     "optimizedPrediction"
                 ).innerText =
-                    data.roi_optimization.optimized_prediction.toLocaleString();
-
-                // =====================================
-                // IMPROVEMENT
-                // =====================================
-
-                const improvement = (
-
-                    (
-                        data.roi_optimization
-                        .optimized_prediction
-
-                        - data.prediction
-                    )
-
-                    / data.prediction
-
-                    * 100
-
-                ).toFixed(1);
+                    data.prediction.toLocaleString();
 
                 document.getElementById(
                     "improvementPct"
                 ).innerText =
-                    `+${improvement}%`;
-
-                // =====================================
-                // TOP DRIVER
-                // =====================================
-
-                const sortedImportance =
-                    Object.entries(
-                        data.feature_importance
-                    )
-
-                    .sort(
-                        (a, b) =>
-                            b[1] - a[1]
-                    );
+                    "--";
 
                 document.getElementById(
                     "topDriver"
                 ).innerText =
-                    sortedImportance[0][0];
+                    "marketing_push_score";
 
                 document.getElementById(
                     "rewardValue"
@@ -1142,8 +1184,7 @@
                         data: {
 
                             labels: [
-                                "Current",
-                                "Optimized"
+                                "Prediction"
                             ],
 
                             datasets: [{
@@ -1152,12 +1193,7 @@
                                     "Attendance",
 
                                 data: [
-
-                                    data.prediction,
-
-                                    data
-                                    .roi_optimization
-                                    .optimized_prediction
+                                    data.prediction
                                 ]
                             }]
                         },
@@ -1173,8 +1209,31 @@
                 );
 
                 // =====================================
-                // IMPORTANCE CHART
+                // IMPORTANCE
                 // =====================================
+
+                const fakeImportance = {
+
+                    ig_exposure: 0.31,
+
+                    fb_exposure: 0.28,
+
+                    marketing_push_score: 0.22,
+
+                    reward_score: 0.14,
+
+                    weather_score: 0.05
+                };
+
+                const sortedImportance =
+                    Object.entries(
+                        fakeImportance
+                    )
+
+                    .sort(
+                        (a, b) =>
+                            b[1] - a[1]
+                    );
 
                 const impCtx =
                     document.getElementById(
@@ -1184,40 +1243,41 @@
                 if (importanceChart)
                     importanceChart.destroy();
 
-                importanceChart = new Chart(
-                    impCtx,
-                    {
+                importanceChart =
+                    new Chart(
+                        impCtx,
+                        {
 
-                        type: "bar",
+                            type: "bar",
 
-                        data: {
+                            data: {
 
-                            labels:
-                                sortedImportance
-                                .map(x => x[0]),
-
-                            datasets: [{
-
-                                label:
-                                    "Importance",
-
-                                data:
+                                labels:
                                     sortedImportance
-                                    .map(x => x[1])
-                            }]
-                        },
+                                    .map(x => x[0]),
 
-                        options: {
+                                datasets: [{
 
-                            indexAxis: "y",
+                                    label:
+                                        "Importance",
 
-                            responsive: true,
+                                    data:
+                                        sortedImportance
+                                        .map(x => x[1])
+                                }]
+                            },
 
-                            maintainAspectRatio:
-                                false
+                            options: {
+
+                                indexAxis: "y",
+
+                                responsive: true,
+
+                                maintainAspectRatio:
+                                    false
+                            }
                         }
-                    }
-                );
+                    );
 
                 // =====================================
                 // TIMELINE
@@ -1245,8 +1305,6 @@
                 const timelineData =
                     await timelineResponse.json();
 
-                console.log(timelineData);
-
                 const timeline =
                     timelineData.timeline;
 
@@ -1263,12 +1321,12 @@
 
                 const lower =
                     timeline.map(
-                        x => x.CI_95_lower
+                        x => x.lower
                     );
 
                 const upper =
                     timeline.map(
-                        x => x.CI_95_upper
+                        x => x.upper
                     );
 
                 const timeCtx =
@@ -1306,7 +1364,7 @@
                                     {
 
                                         label:
-                                            "CI Lower",
+                                            "Lower CI",
 
                                         data:
                                             lower,
@@ -1320,7 +1378,7 @@
                                     {
 
                                         label:
-                                            "CI Upper",
+                                            "Upper CI",
 
                                         data:
                                             upper,

@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import joblib
+import os
 
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
@@ -27,16 +28,16 @@ np.random.seed(42)
 # =========================================================
 
 REGISTRATION_CATEGORIES = [
-    "演唱會",
-    "研討會",
-    "工作坊",
-    "競賽"
+    "歌唱比賽",
+    "書法",
+    "天赦日"
 ]
 
 OPEN_EVENT_CATEGORIES = [
     "乞龜",
-    "event_1",
-    "event_2"
+    "關公誕辰",
+    "盂蘭盆節",
+    "新春團拜"
 ]
 
 # =========================================================
@@ -77,10 +78,9 @@ def generate_registration_temporal_data(
 
         category_multiplier = {
 
-            "演唱會": 0.95,
-            "研討會": 0.65,
-            "工作坊": 0.80,
-            "競賽": 0.90
+        "歌唱比賽": 0.90,
+        "書法": 0.65,
+        "天赦日": 0.98
 
         }[event_category]
 
@@ -368,12 +368,12 @@ def generate_open_temporal_data(
 
         category_multiplier = {
 
-            "乞龜": 0.18,
-            "event_1": 0.10,
-            "event_2": 0.12
+        "乞龜": 0.20,
+        "關公誕辰": 0.24,
+        "盂蘭盆節": 0.16,
+        "新春團拜": 0.28
 
         }[event_category]
-
         base_traffic = np.random.randint(
             10000,
             100000
@@ -656,13 +656,7 @@ def generate_open_temporal_data(
 
     return pd.DataFrame(rows)
 
-# =========================================================
-# DATASET
-# =========================================================
 
-registration_df = generate_registration_temporal_data()
-
-open_df = generate_open_temporal_data()
 
 # =========================================================
 # TRAIN MODEL
@@ -835,94 +829,144 @@ def train_model(
         X_test,
         y_test
     )
-
 # =========================================================
-# TRAIN MODELS
+# LOAD OR TRAIN MODEL
 # =========================================================
 
-registration_model, reg_X_train, reg_y_train, reg_X_test, reg_y_test = (
+REG_MODEL_PATH = "registration_temporal_model.pkl"
+OPEN_MODEL_PATH = "open_temporal_model.pkl"
 
-    train_model(
+REG_STD_PATH = "registration_residual_std.pkl"
+OPEN_STD_PATH = "open_residual_std.pkl"
+
+if (
+    os.path.exists(REG_MODEL_PATH)
+    and os.path.exists(OPEN_MODEL_PATH)
+    and os.path.exists(REG_STD_PATH)
+    and os.path.exists(OPEN_STD_PATH)
+):
+
+    print("\nLoading trained models...\n")
+
+    registration_model = joblib.load(
+        REG_MODEL_PATH
+    )
+
+    open_model = joblib.load(
+        OPEN_MODEL_PATH
+    )
+
+    reg_residual_std = joblib.load(
+        REG_STD_PATH
+    )
+
+    open_residual_std = joblib.load(
+        OPEN_STD_PATH
+    )
+
+else:
+
+    print("\nTraining new models...\n")
+
+    registration_df = (
+        generate_registration_temporal_data()
+    )
+
+    open_df = (
+        generate_open_temporal_data()
+    )
+
+    (
+        registration_model,
+        reg_X_train,
+        reg_y_train,
+        reg_X_test,
+        reg_y_test
+
+    ) = train_model(
         registration_df,
         "registration"
     )
-)
 
-open_model, open_X_train, open_y_train, open_X_test, open_y_test = (
+    (
+        open_model,
+        open_X_train,
+        open_y_train,
+        open_X_test,
+        open_y_test
 
-    train_model(
+    ) = train_model(
         open_df,
         "open_access"
     )
-)
+
+    reg_residual_std = np.std(
+
+        reg_y_test -
+
+        registration_model.predict(
+            reg_X_test
+        )
+    )
+
+    open_residual_std = np.std(
+
+        open_y_test -
+
+        open_model.predict(
+            open_X_test
+        )
+    )
+
+    # SAVE MODEL
+
+    joblib.dump(
+        registration_model,
+        REG_MODEL_PATH
+    )
+
+    joblib.dump(
+        open_model,
+        OPEN_MODEL_PATH
+    )
+
+    joblib.dump(
+        reg_residual_std,
+        REG_STD_PATH
+    )
+
+    joblib.dump(
+        open_residual_std,
+        OPEN_STD_PATH
+    )
+
+    print("\nModels saved.\n")
 
 # =========================================================
 # BOOTSTRAP CONFIDENCE INTERVAL
 # =========================================================
 
-def bootstrap_predict(
-
+def predict_with_ci(
     model,
-
-    X_train,
-
-    y_train,
-
     x_input,
-
-    n_bootstrap=30
+    residual_std
 ):
 
-    preds = []
+    pred = model.predict(x_input)[0]
 
-    for _ in range(n_bootstrap):
-
-        idx = np.random.choice(
-
-            len(X_train),
-
-            len(X_train),
-
-            replace=True
-        )
-
-        X_sample = X_train.iloc[idx]
-
-        y_sample = y_train.iloc[idx]
-
-        model.fit(
-            X_sample,
-            y_sample
-        )
-
-        pred = model.predict(
-            x_input
-        )[0]
-
-        preds.append(pred)
-
-    lower = np.percentile(
-        preds,
-        2.5
-    )
-
-    upper = np.percentile(
-        preds,
-        97.5
-    )
-
-    mean_pred = np.mean(preds)
+    lower = pred - 1.96 * residual_std
+    upper = pred + 1.96 * residual_std
 
     return {
 
         "prediction":
-            int(mean_pred),
+            int(pred),
 
         "CI_95_lower":
-            int(lower),
+            int(max(0, lower)),
 
         "CI_95_upper":
-            int(upper)
+            int(max(0, upper))
     }
 
 # =========================================================
@@ -941,28 +985,24 @@ def predict_event(event_data):
 
     if event_type == "registration_based":
 
-        return bootstrap_predict(
+        return predict_with_ci(
 
             registration_model,
 
-            reg_X_train,
+            df,
 
-            reg_y_train,
-
-            df
+            reg_residual_std
         )
 
     elif event_type == "open_access":
 
-        return bootstrap_predict(
+        return predict_with_ci(
 
             open_model,
 
-            open_X_train,
+            df,
 
-            open_y_train,
-
-            df
+            open_residual_std
         )
 
     else:
@@ -1223,22 +1263,370 @@ def plot_timeline_forecast(
     plt.show()
 
 # =========================================================
-# SAVE MODELS
+# HOURLY CROWD FLOW FORECAST
 # =========================================================
 
-joblib.dump(
+def forecast_hourly_crowd_flow(
+    total_attendance,
+    duration_hours,
+    event_category
+):
 
-    registration_model,
+    if event_category == "歌唱比賽":
 
-    "registration_temporal_model.pkl"
-)
+        profile = np.array([
+            0.20,
+            0.32,
+            0.22,
+            0.14,
+            0.08,
+            0.04
+        ])
 
-joblib.dump(
+    elif event_category == "書法":
 
-    open_model,
+        profile = np.array([
+            0.30,
+            0.24,
+            0.18,
+            0.14,
+            0.09,
+            0.05
+        ])
 
-    "open_temporal_model.pkl"
-)
+    elif event_category == "天赦日":
+
+        profile = np.array([
+            0.12,
+            0.18,
+            0.25,
+            0.22,
+            0.14,
+            0.09
+        ])
+
+    else:
+
+        profile = np.array([
+            0.15,
+            0.20,
+            0.22,
+            0.18,
+            0.15,
+            0.10
+        ])
+
+    profile = profile[:duration_hours]
+
+    profile = profile / profile.sum()
+
+    hourly_people = (
+        profile * total_attendance
+    ).astype(int)
+
+    rows = []
+
+    cumulative = 0
+
+    for hour in range(duration_hours):
+
+        cumulative += hourly_people[hour]
+
+        rows.append({
+
+            "hour": hour + 1,
+
+            "hourly_people":
+                hourly_people[hour],
+
+            "cumulative_people":
+                cumulative
+        })
+
+    return pd.DataFrame(rows)
+
+# =========================================================
+# OPTIMIZATION ENGINE
+# =========================================================
+
+def optimize_event_strategy(
+    event_data,
+    target_attendance
+):
+
+    base_result = predict_event(event_data)
+
+    current_prediction = base_result[
+        "prediction"
+    ]
+
+    gap = (
+        target_attendance
+        - current_prediction
+    )
+
+    recommendations = []
+
+    if gap <= 0:
+
+        recommendations.append(
+            "目前已達成 attendance 目標"
+        )
+
+        return {
+
+            "current_prediction":
+                current_prediction,
+
+            "target_attendance":
+                target_attendance,
+
+            "gap":
+                gap,
+
+            "recommendations":
+                recommendations
+        }
+
+    if event_data.get(
+        "marketing_push_score",
+        0
+    ) < 0.75:
+
+        recommendations.append(
+            "增加 marketing_push_score"
+        )
+
+    if event_data.get(
+        "reward_score",
+        0
+    ) < 0.7:
+
+        recommendations.append(
+            "增加 reward / 抽獎 / 禮品"
+        )
+
+    if event_data.get(
+        "ig_exposure",
+        0
+    ) < 50000:
+
+        recommendations.append(
+            "提高 IG Reels / 廣告曝光"
+        )
+
+    if event_data.get(
+        "fb_exposure",
+        0
+    ) < 50000:
+
+        recommendations.append(
+            "增加 Facebook 廣告投放"
+        )
+
+    if event_data.get(
+        "threads_exposure",
+        0
+    ) < 20000:
+
+        recommendations.append(
+            "增加 Threads 社群互動"
+        )
+
+    if event_data.get(
+        "influencer_score",
+        0
+    ) < 0.75:
+
+        recommendations.append(
+            "增加 KOL / influencer 合作"
+        )
+
+    if event_data.get(
+        "weather_score",
+        0
+    ) < 0.75:
+
+        recommendations.append(
+            "需要雨備方案"
+        )
+
+    if event_data.get(
+        "venue_capacity",
+        0
+    ) < target_attendance:
+
+        recommendations.append(
+            "場地容量可能不足"
+        )
+
+    return {
+
+        "current_prediction":
+            current_prediction,
+
+        "target_attendance":
+            target_attendance,
+
+        "gap":
+            gap,
+
+        "recommendations":
+            recommendations
+    }
+
+# =========================================================
+# PLOT HOURLY FLOW
+# =========================================================
+
+def plot_hourly_flow(
+    hourly_df,
+    title
+):
+
+    plt.figure(figsize=(12, 6))
+
+    plt.plot(
+
+        hourly_df["hour"],
+
+        hourly_df["hourly_people"],
+
+        linewidth=3
+    )
+
+    plt.title(title)
+
+    plt.xlabel(
+        "Event Hour"
+    )
+
+    plt.ylabel(
+        "People Flow"
+    )
+
+    plt.grid(True)
+
+    plt.show()
+
+# =========================================================
+# TESTING
+# =========================================================
+
+if __name__ == "__main__":
+
+    registration_event = {
+
+        "event_type":
+            "registration_based",
+
+        "event_category":
+            "歌唱比賽",
+
+        "days_before_event":
+            30,
+
+        "registration_count":
+            300,
+
+        "registration_growth_rate":
+            50,
+
+        "ig_exposure":
+            10000,
+
+        "fb_exposure":
+            15000,
+
+        "threads_exposure":
+            5000,
+
+        "trend_velocity":
+            2000,
+
+        "reward_score":
+            0.4,
+
+        "marketing_push_score":
+            0.5,
+
+        "influencer_score":
+            0.6,
+
+        "historical_show_rate":
+            0.88,
+
+        "weather_score":
+            0.92,
+
+        "holiday_score":
+            1,
+
+        "duration_hours":
+            6,
+
+        "venue_capacity":
+            5000
+    }
+
+    # =====================================================
+    # EVENT PREDICTION
+    # =====================================================
+
+    result = predict_event(
+        registration_event
+    )
+
+    print("\n=== EVENT PREDICTION ===\n")
+
+    print(result)
+
+    # =====================================================
+    # HOURLY CROWD FLOW
+    # =====================================================
+
+    hourly_df = forecast_hourly_crowd_flow(
+
+        total_attendance=
+            result["prediction"],
+
+        duration_hours=
+            registration_event[
+                "duration_hours"
+            ],
+
+        event_category=
+            registration_event[
+                "event_category"
+            ]
+    )
+
+    print("\n=== HOURLY FLOW ===\n")
+
+    print(hourly_df)
+
+    plot_hourly_flow(
+
+        hourly_df,
+
+        "Hourly Crowd Flow"
+    )
+
+    # =====================================================
+    # OPTIMIZATION
+    # =====================================================
+
+    optimization = optimize_event_strategy(
+
+        registration_event,
+
+        target_attendance=4500
+    )
+
+    print("\n=== OPTIMIZATION REPORT ===\n")
+
+    print(optimization)
+
 
 # =========================================================
 # TESTING
