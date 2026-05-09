@@ -1,204 +1,1371 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
+
 <head>
+
     <meta charset="UTF-8">
-    <title>簡易模式 - 宮廟人流決策分析</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI 活動人流預測系統</title>
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
-        body { background-color: #F2EBE1; font-family: "Microsoft JhengHei", sans-serif; margin: 0; display: flex; height: 100vh; overflow: hidden; }
-        
-        /* 左側側邊欄 */
-        .sidebar-left { width: 20%; background: #8B0000; color: white; padding: 20px; overflow-y: auto; position: relative; overflow-y: visible;
-            overflow-x: visible; /* 🔥 加這行 */
-            z-index: 10;}
-        .sidebar-title { font-size: 22px; font-weight: 900; margin-bottom: 20px; border-bottom: 2px solid #FFD700; padding-bottom: 10px; }
-        .back-home { text-decoration: none; display: flex; align-items: center; background: rgba(255,255,255,0.2); padding: 10px; border-radius: 8px; margin-bottom: 20px; color: white; font-weight: bold; transition: 0.3s; }
-        .event-item { padding: 15px; border-bottom: 1px solid #a52a2a; cursor: pointer; font-weight: bold; position: relative; }
-        .event-item:hover { background: #a52a2a; }
-        .popover { display: none; position: absolute; left: 105%; top: 50%; transform: translateY(-50%); background: white; color: #333; padding: 15px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); width: 180px; z-index: 1000; border-left: 5px solid #FFD700; }
-        .event-item:hover .popover { display: block; }
 
-        /* 中間：分析結果展示區 */
-        .main-content { flex: 1; background: white; margin: 20px; border-radius: 15px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow-y: auto; }
-        .prediction-card { text-align: center; padding: 20px; background: #fdfaf5; border-radius: 12px; margin-bottom: 20px; border: 1px solid #eee; }
-        .prediction-number { font-size: 48px; font-weight: 900; color: #8B0000; line-height: 1; }
-        
-        .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
-        .metric-box { background: white; padding: 12px; border-radius: 8px; border: 1px solid #eee; }
-        .metric-label { font-size: 0.8rem; color: #666; margin-bottom: 3px; }
-        .metric-value { font-size: 1rem; font-weight: bold; color: #333; }
+        * {
+            box-sizing: border-box;
+        }
 
-        .charts-row { display: flex; gap: 15px; margin-top: 15px; height: 280px; }
-        .chart-box { flex: 1; background: #fff; border: 1px solid #f2ebe1; padding: 12px; border-radius: 12px; position: relative; }
-        .chart-title { font-size: 0.95rem; font-weight: bold; text-align: center; margin-bottom: 8px; color: #8B0000; }
+        body {
 
-        /* 右側：參數面板 */
-        .sidebar-right { width: 25%; background: #fff; padding: 20px; border-left: 1px solid #eee; overflow-y: auto; }
-        .input-group { margin-bottom: 12px; }
-        .input-group label { display: block; font-weight: bold; margin-bottom: 4px; color: #555; font-size: 0.85rem; }
-        .input-group input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 6px; }
-        .btn-predict { width: 100%; padding: 12px; background: #8B0000; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: 900; cursor: pointer; transition: 0.3s; margin-top: 5px; }
-        .btn-predict:hover { background: #a52a2a; }
+            margin: 0;
+
+            font-family: "Microsoft JhengHei", sans-serif;
+
+            background: #F5F1EA;
+
+            display: flex;
+
+            height: 100vh;
+
+            overflow: hidden;
+        }
+
+        /* =========================================
+           LEFT
+        ========================================= */
+
+        .sidebar-left {
+
+            width: 260px;
+
+            background: #7A0000;
+
+            color: white;
+
+            padding: 20px;
+
+            overflow-y: auto;
+        }
+
+        .logo {
+
+            font-size: 28px;
+
+            font-weight: 900;
+
+            margin-bottom: 25px;
+
+            border-bottom: 2px solid gold;
+
+            padding-bottom: 10px;
+        }
+
+        .menu-box {
+
+            background: rgba(255,255,255,0.12);
+
+            border-radius: 10px;
+
+            padding: 15px;
+
+            margin-bottom: 20px;
+        }
+
+        .menu-title {
+
+            font-size: 18px;
+
+            font-weight: bold;
+
+            margin-bottom: 10px;
+        }
+
+        .menu-box ul {
+
+            padding-left: 18px;
+
+            line-height: 1.8;
+        }
+
+        /* =========================================
+           CENTER
+        ========================================= */
+
+        .main-content {
+
+            flex: 1;
+
+            overflow-y: auto;
+
+            padding: 20px;
+        }
+
+        .top-card {
+
+            background: white;
+
+            border-radius: 16px;
+
+            padding: 25px;
+
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+
+            margin-bottom: 20px;
+        }
+
+        .prediction-title {
+
+            font-size: 28px;
+
+            font-weight: bold;
+
+            color: #7A0000;
+        }
+
+        .prediction-value {
+
+            font-size: 72px;
+
+            font-weight: 900;
+
+            color: #7A0000;
+
+            margin-top: 10px;
+        }
+
+        .confidence {
+
+            color: #666;
+
+            margin-top: 10px;
+
+            font-size: 16px;
+        }
+
+        .metric-grid {
+
+            display: grid;
+
+            grid-template-columns: repeat(4, 1fr);
+
+            gap: 15px;
+
+            margin-top: 20px;
+        }
+
+        .metric-card {
+
+            background: #FAF8F4;
+
+            border: 1px solid #eee;
+
+            border-radius: 12px;
+
+            padding: 15px;
+        }
+
+        .metric-label {
+
+            color: #777;
+
+            font-size: 14px;
+        }
+
+        .metric-value {
+
+            margin-top: 6px;
+
+            font-size: 24px;
+
+            font-weight: bold;
+
+            color: #333;
+        }
+
+        .chart-grid {
+
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 20px;
+
+            margin-top: 20px;
+        }
+
+        .chart-card {
+
+            background: white;
+
+            border-radius: 16px;
+
+            padding: 20px;
+
+            height: 420px;
+
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .chart-title {
+
+            font-size: 18px;
+
+            font-weight: bold;
+
+            color: #7A0000;
+
+            margin-bottom: 15px;
+        }
+
+        .timeline-card {
+
+            margin-top: 20px;
+
+            background: white;
+
+            border-radius: 16px;
+
+            padding: 20px;
+
+            height: 450px;
+
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        /* =========================================
+           RIGHT PANEL
+        ========================================= */
+
+        .sidebar-right {
+
+            width: 360px;
+
+            background: white;
+
+            padding: 20px;
+
+            overflow-y: auto;
+
+            border-left: 1px solid #eee;
+        }
+
+        .panel-title {
+
+            font-size: 26px;
+
+            font-weight: bold;
+
+            color: #7A0000;
+
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+
+            margin-top: 20px;
+
+            margin-bottom: 10px;
+
+            font-size: 18px;
+
+            font-weight: bold;
+
+            color: #7A0000;
+
+            border-bottom: 2px solid #eee;
+
+            padding-bottom: 5px;
+        }
+
+        .input-group {
+
+            margin-bottom: 12px;
+        }
+
+        .input-group label {
+
+            display: block;
+
+            margin-bottom: 5px;
+
+            font-weight: bold;
+
+            color: #555;
+
+            font-size: 14px;
+        }
+
+        .input-group input,
+        .input-group select {
+
+            width: 100%;
+
+            padding: 10px;
+
+            border-radius: 8px;
+
+            border: 1px solid #ccc;
+
+            font-size: 14px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .btn-run {
+
+            width: 100%;
+
+            padding: 15px;
+
+            border: none;
+
+            border-radius: 10px;
+
+            background: #7A0000;
+
+            color: white;
+
+            font-size: 20px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            margin-top: 20px;
+        }
+
+        .btn-run:hover {
+
+            background: #A30000;
+        }
+
     </style>
+
 </head>
+
 <body>
 
+    <!-- =========================================
+         LEFT SIDEBAR
+    ========================================= -->
+
     <div class="sidebar-left">
-        <a href="/" class="back-home"><span>🏠</span> 回到首頁</a>
-        <div class="sidebar-title">歷史活動列表</div>
-        <div class="event-item">2025 歲末祈福法會<div class="popover"><label>數據年份</label><select><option>2024</option></select></div></div>
-        <div class="event-item">萬年季：乞龜慶典<div class="popover"><label>數據年份</label><select><option>2024</option></select></div></div>
+
+        <div class="logo">
+            AI Event Forecast
+        </div>
+
+        <div class="menu-box">
+
+            <div class="menu-title">
+                功能
+            </div>
+
+            <ul>
+                <li>Attendance Forecast</li>
+                <li>Timeline Prediction</li>
+                <li>ROI Optimization</li>
+                <li>Feature Importance</li>
+                <li>Reward Simulation</li>
+                <li>Trend Analysis</li>
+            </ul>
+
+        </div>
+
+        <div class="menu-box">
+
+            <div class="menu-title">
+                模型
+            </div>
+
+            <ul>
+                <li>XGBoost Temporal Forecast</li>
+                <li>Bootstrap Confidence Interval</li>
+                <li>Social Trend Dynamics</li>
+                <li>Reward Growth Simulation</li>
+            </ul>
+
+        </div>
+
     </div>
+
+    <!-- =========================================
+         MAIN CONTENT
+    ========================================= -->
 
     <div class="main-content">
-        <div class="prediction-card">
-            <h3 style="margin:0 0 10px 0; color:#8B0000;">AI 預測分析結果</h3>
-            <div class="prediction-number" id="pred-value">--</div>
-            <div id="confidence-range" style="color: #888; font-size: 0.9rem;">(置信區間：-- ~ --)</div>
-            
-            <div class="metrics-grid">
-                <div class="metric-box">
-                    <div class="metric-label">建議預算方案</div>
-                    <div class="metric-value" id="suggested-budget">TWD --</div>
-                </div>
-                <div class="metric-box">
-                    <div class="metric-label">預期人流提升</div>
-                    <div class="metric-value" id="improvement-pct" style="color: #006400;">-- %</div>
-                </div>
-                <div class="metric-box">
-                    <div class="metric-label">核心驅動因素</div>
-                    <div class="metric-value" id="top-driver">--</div>
-                </div>
+
+        <!-- TOP -->
+
+        <div class="top-card">
+
+            <div class="prediction-title">
+                AI 預測 Attendance
             </div>
+
+            <div class="prediction-value" id="predictionValue">
+                --
+            </div>
+
+            <div class="confidence" id="confidenceText">
+                95% 信賴區間：--
+            </div>
+
+            <!-- METRICS -->
+
+            <div class="metric-grid">
+
+                <div class="metric-card">
+
+                    <div class="metric-label">
+                        最佳化預測
+                    </div>
+
+                    <div class="metric-value"
+                         id="optimizedPrediction">
+                        --
+                    </div>
+
+                </div>
+
+                <div class="metric-card">
+
+                    <div class="metric-label">
+                        預期提升
+                    </div>
+
+                    <div class="metric-value"
+                         id="improvementPct">
+                        --
+                    </div>
+
+                </div>
+
+                <div class="metric-card">
+
+                    <div class="metric-label">
+                        核心因子
+                    </div>
+
+                    <div class="metric-value"
+                         id="topDriver">
+                        --
+                    </div>
+
+                </div>
+
+                <div class="metric-card">
+
+                    <div class="metric-label">
+                        Reward Score
+                    </div>
+
+                    <div class="metric-value"
+                         id="rewardValue">
+                        --
+                    </div>
+
+                </div>
+
+            </div>
+
         </div>
 
-        <div class="charts-row">
-            <div class="chart-box">
-                <div class="chart-title">策略效益分析</div>
+        <!-- CHARTS -->
+
+        <div class="chart-grid">
+
+            <!-- ROI -->
+
+            <div class="chart-card">
+
+                <div class="chart-title">
+                    ROI Optimization
+                </div>
+
                 <canvas id="roiChart"></canvas>
+
             </div>
-            <div class="chart-box">
-                <div class="chart-title">因素影響權重</div>
+
+            <!-- IMPORTANCE -->
+
+            <div class="chart-card">
+
+                <div class="chart-title">
+                    Feature Importance
+                </div>
+
                 <canvas id="importanceChart"></canvas>
+
             </div>
+
         </div>
 
-        <div class="charts-row">
-            <div class="chart-box" style="flex: 1.5;">
-                <div class="chart-title">社群媒體曝光分佈</div>
-                <canvas id="socialChart"></canvas>
+        <!-- TIMELINE -->
+
+        <div class="timeline-card">
+
+            <div class="chart-title">
+                Attendance Timeline Forecast
             </div>
-            <div class="chart-box">
-                <div class="chart-title">工作人員建議</div>
-                <div style="text-align: center; padding-top: 40px;">
-                    <span id="staff-suggest" style="font-size: 3rem; font-weight: 900; color: #8B0000;">--</span>
-                    <p style="color: #666; margin: 5px 0 0 0;">人 (最佳效能)</p>
-                </div>
-            </div>
+
+            <canvas id="timelineChart"></canvas>
+
         </div>
+
     </div>
 
+    <!-- =========================================
+         RIGHT SIDEBAR
+    ========================================= -->
+
     <div class="sidebar-right">
-        <h3 style="margin-top: 0; color: #8B0000; border-bottom: 2px solid #F2EBE1; padding-bottom: 10px;">分析參數</h3>
-        <div class="input-group"><label>FB 曝光量</label><input type="number" id="FB_exposure" value="3000"></div>
-        <div class="input-group"><label>IG 曝光量</label><input type="number" id="IG_exposure" value="1500"></div>
-        <div class="input-group"><label>YT 曝光量</label><input type="number" id="YT_exposure" value="1000"></div>
-        <div class="input-group"><label>廣告預算 (TWD)</label><input type="number" id="Ad_spend" value="15000"></div>
-        <div class="input-group"><label>活動時數</label><input type="number" id="duration_hours" value="8"></div>
-        <div class="input-group"><label>現有人手</label><input type="number" id="num_staff" value="20"></div>
-        <button class="btn-predict" onclick="runPrediction()">執行 AI 分析</button>
+
+        <div class="panel-title">
+            活動參數
+        </div>
+
+        <!-- EVENT TYPE -->
+
+        <div class="input-group">
+
+            <label>活動類型</label>
+
+            <select id="event_type"
+                    onchange="toggleFields()">
+
+                <option value="registration_based">
+                    報名制活動
+                </option>
+
+                <option value="open_access">
+                    開放式活動
+                </option>
+
+            </select>
+
+        </div>
+
+        <!-- CATEGORY -->
+
+        <div class="input-group">
+
+            <label>活動分類</label>
+
+            <select id="event_category"></select>
+
+        </div>
+
+        <!-- COMMON -->
+
+        <div class="section-title">
+            通用參數
+        </div>
+
+        <div class="input-group">
+            <label>活動前幾天</label>
+            <input type="number"
+                   id="days_before_event"
+                   value="30">
+        </div>
+
+        <div class="input-group">
+            <label>Weather Score</label>
+            <input type="number"
+                   step="0.01"
+                   id="weather_score"
+                   value="0.9">
+        </div>
+
+        <div class="input-group">
+            <label>Holiday Score</label>
+            <input type="number"
+                   id="holiday_score"
+                   value="1">
+        </div>
+
+        <div class="input-group">
+            <label>Venue Capacity</label>
+            <input type="number"
+                   id="venue_capacity"
+                   value="5000">
+        </div>
+
+        <!-- SOCIAL -->
+
+        <div class="section-title">
+            社群數據
+        </div>
+
+        <div class="input-group">
+            <label>IG Exposure</label>
+            <input type="number"
+                   id="ig_exposure"
+                   value="30000">
+        </div>
+
+        <div class="input-group">
+            <label>FB Exposure</label>
+            <input type="number"
+                   id="fb_exposure"
+                   value="50000">
+        </div>
+
+        <div class="input-group">
+            <label>Threads Exposure</label>
+            <input type="number"
+                   id="threads_exposure"
+                   value="10000">
+        </div>
+
+        <div class="input-group">
+            <label>Trend Velocity</label>
+            <input type="number"
+                   id="trend_velocity"
+                   value="5000">
+        </div>
+
+        <!-- REWARD -->
+
+        <div class="section-title">
+            Reward & Marketing
+        </div>
+
+        <div class="input-group">
+            <label>Reward Score</label>
+            <input type="number"
+                   step="0.01"
+                   id="reward_score"
+                   value="0.5">
+        </div>
+
+        <div class="input-group">
+            <label>Marketing Push</label>
+            <input type="number"
+                   step="0.01"
+                   id="marketing_push_score"
+                   value="0.6">
+        </div>
+
+        <!-- REGISTRATION -->
+
+        <div id="registrationFields">
+
+            <div class="section-title">
+                報名制活動
+            </div>
+
+            <div class="input-group">
+                <label>Registration Count</label>
+                <input type="number"
+                       id="registration_count"
+                       value="3000">
+            </div>
+
+            <div class="input-group">
+                <label>Registration Growth</label>
+                <input type="number"
+                       id="registration_growth_rate"
+                       value="200">
+            </div>
+
+            <div class="input-group">
+                <label>Historical Show Rate</label>
+                <input type="number"
+                       step="0.01"
+                       id="historical_show_rate"
+                       value="0.88">
+            </div>
+
+            <div class="input-group">
+                <label>Duration Hours</label>
+                <input type="number"
+                       id="duration_hours"
+                       value="5">
+            </div>
+
+            <div class="input-group">
+                <label>Influencer Score</label>
+                <input type="number"
+                       step="0.01"
+                       id="influencer_score"
+                       value="0.7">
+            </div>
+
+        </div>
+
+        <!-- OPEN -->
+
+        <div id="openFields"
+             class="hidden">
+
+            <div class="section-title">
+                開放式活動
+            </div>
+
+            <div class="input-group">
+                <label>Nearby Foot Traffic</label>
+                <input type="number"
+                       id="nearby_foot_traffic"
+                       value="50000">
+            </div>
+
+            <div class="input-group">
+                <label>Foot Traffic Growth</label>
+                <input type="number"
+                       id="foot_traffic_growth"
+                       value="3000">
+            </div>
+
+            <div class="input-group">
+                <label>Venue Visibility</label>
+                <input type="number"
+                       step="0.01"
+                       id="venue_visibility_score"
+                       value="0.9">
+            </div>
+
+            <div class="input-group">
+                <label>Booth Count</label>
+                <input type="number"
+                       id="booth_count"
+                       value="40">
+            </div>
+
+            <div class="input-group">
+                <label>Live Performance</label>
+                <input type="number"
+                       step="0.01"
+                       id="live_performance_score"
+                       value="0.8">
+            </div>
+
+            <div class="input-group">
+                <label>Transport Accessibility</label>
+                <input type="number"
+                       step="0.01"
+                       id="transport_accessibility"
+                       value="0.9">
+            </div>
+
+        </div>
+
+        <!-- BUTTON -->
+
+        <button class="btn-run"
+                onclick="runPrediction()">
+
+            執行 AI 分析
+
+        </button>
+
     </div>
 
     <script>
-        let roiChart, importanceChart, socialChart;
 
-        async function runPrediction() {
-            const payload = {
-                FB_exposure: parseInt(document.getElementById('FB_exposure').value),
-                IG_exposure: parseInt(document.getElementById('IG_exposure').value),
-                YT_exposure: parseInt(document.getElementById('YT_exposure').value),
-                Ad_spend: parseInt(document.getElementById('Ad_spend').value),
-                duration_hours: parseInt(document.getElementById('duration_hours').value),
-                prize_value: 5000, 
-                num_staff: parseInt(document.getElementById('num_staff').value),
-                queue_design_score: 0.8, is_weekend: 1, is_holiday: 0, weather_score: 0.9, past_avg: 1000, past_max: 2000
-            };
+        let roiChart;
+        let importanceChart;
+        let timelineChart;
 
-            try {
-                const response = await fetch('http://127.0.0.1:8000/predict', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                const data = await response.json();
+        // =========================================
+        // TOGGLE
+        // =========================================
 
-                // 1. 更新數值
-                document.getElementById('pred-value').innerText = data.prediction.toLocaleString();
-                if(data.confidence_interval) {
-                    document.getElementById('confidence-range').innerText = `(置信區間：${data.confidence_interval.lower} ~ ${data.confidence_interval.upper})`;
-                }
+        function toggleFields() {
 
-                const roi = data.roi_optimization;
-                document.getElementById('suggested-budget').innerText = `TWD ${roi.best_config.Ad_spend.toLocaleString()}`;
-                document.getElementById('staff-suggest').innerText = roi.best_config.num_staff;
-                
-                const impPct = ((roi.best_config_prediction - data.prediction) / data.prediction * 100).toFixed(1);
-                document.getElementById('improvement-pct').innerText = `+${impPct}%`;
+            const eventType =
+                document.getElementById(
+                    "event_type"
+                ).value;
 
-                // 找出最強因素
-                const sortedImp = Object.entries(data.feature_importance).sort((a,b) => b[1] - a[1]);
-                document.getElementById('top-driver').innerText = sortedImp[0][0].replace('_',' ');
+            const reg =
+                document.getElementById(
+                    "registrationFields"
+                );
 
-                // 2. 策略效益圖表
-                const roiCtx = document.getElementById('roiChart').getContext('2d');
-                if (roiChart) roiChart.destroy();
-                roiChart = new Chart(roiCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['目前', '優化建議'],
-                        datasets: [
-                            { label: '人流', data: [data.prediction, roi.best_config_prediction], backgroundColor: '#8B0000', yAxisID: 'y' },
-                            { label: '成本', data: [payload.Ad_spend, roi.best_config.Ad_spend], backgroundColor: '#FFD700', yAxisID: 'y1' }
-                        ]
-                    },
-                    options: { 
-                        responsive: true, maintainAspectRatio: false,
-                        scales: { y1: { position: 'right', grid: { drawOnChartArea: false } } }
-                    }
-                });
+            const open =
+                document.getElementById(
+                    "openFields"
+                );
 
-                // 3. 重要性圖表
-                const impCtx = document.getElementById('importanceChart').getContext('2d');
-                if (importanceChart) importanceChart.destroy();
-                importanceChart = new Chart(impCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: sortedImp.map(i => i[0]),
-                        datasets: [{ label: '權重', data: sortedImp.map(i => i[1]), backgroundColor: '#8B0000' }]
-                    },
-                    options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false }
-                });
+            const category =
+                document.getElementById(
+                    "event_category"
+                );
 
-                // 4. 社群分析圖表
-                const socialCtx = document.getElementById('socialChart').getContext('2d');
-                if (socialChart) socialChart.destroy();
-                socialChart = new Chart(socialCtx, {
-                    type: 'pie',
-                    data: {
-                        labels: ['FB', 'IG', 'YT'],
-                        datasets: [{
-                            data: [payload.FB_exposure, payload.IG_exposure, payload.YT_exposure],
-                            backgroundColor: ['#1877F2', '#E4405F', '#FF0000']
-                        }]
-                    },
-                    options: { responsive: true, maintainAspectRatio: false }
-                });
+            if (
+                eventType ===
+                "registration_based"
+            ) {
 
-            } catch (e) {
-                console.error("Fetch error:", e);
-                alert("無法連接到 AI 分析伺服器，請確保 app.py 已啟動");
+                reg.classList.remove(
+                    "hidden"
+                );
+
+                open.classList.add(
+                    "hidden"
+                );
+
+                category.innerHTML = `
+                    <option value="演唱會">演唱會</option>
+                    <option value="研討會">研討會</option>
+                    <option value="工作坊">工作坊</option>
+                    <option value="競賽">競賽</option>
+                `;
+
+            } else {
+
+                open.classList.remove(
+                    "hidden"
+                );
+
+                reg.classList.add(
+                    "hidden"
+                );
+
+                category.innerHTML = `
+                    <option value="乞龜">乞龜</option>
+                    <option value="event_1">event_1</option>
+                    <option value="event_2">event_2</option>
+                `;
             }
         }
+
+        // =========================================
+        // PAYLOAD
+        // =========================================
+
+        function buildPayload() {
+
+            const eventType =
+                document.getElementById(
+                    "event_type"
+                ).value;
+
+            let payload = {
+
+                event_type: eventType,
+
+                event_category:
+                    document.getElementById(
+                        "event_category"
+                    ).value,
+
+                days_before_event:
+                    parseInt(
+                        document.getElementById(
+                            "days_before_event"
+                        ).value
+                    ),
+
+                weather_score:
+                    parseFloat(
+                        document.getElementById(
+                            "weather_score"
+                        ).value
+                    ),
+
+                holiday_score:
+                    parseInt(
+                        document.getElementById(
+                            "holiday_score"
+                        ).value
+                    ),
+
+                venue_capacity:
+                    parseInt(
+                        document.getElementById(
+                            "venue_capacity"
+                        ).value
+                    ),
+
+                ig_exposure:
+                    parseInt(
+                        document.getElementById(
+                            "ig_exposure"
+                        ).value
+                    ),
+
+                fb_exposure:
+                    parseInt(
+                        document.getElementById(
+                            "fb_exposure"
+                        ).value
+                    ),
+
+                threads_exposure:
+                    parseInt(
+                        document.getElementById(
+                            "threads_exposure"
+                        ).value
+                    ),
+
+                trend_velocity:
+                    parseFloat(
+                        document.getElementById(
+                            "trend_velocity"
+                        ).value
+                    ),
+
+                reward_score:
+                    parseFloat(
+                        document.getElementById(
+                            "reward_score"
+                        ).value
+                    ),
+
+                marketing_push_score:
+                    parseFloat(
+                        document.getElementById(
+                            "marketing_push_score"
+                        ).value
+                    )
+            };
+
+            // REGISTRATION
+
+            if (
+                eventType ===
+                "registration_based"
+            ) {
+
+                payload.registration_count =
+                    parseInt(
+                        document.getElementById(
+                            "registration_count"
+                        ).value
+                    );
+
+                payload.registration_growth_rate =
+                    parseInt(
+                        document.getElementById(
+                            "registration_growth_rate"
+                        ).value
+                    );
+
+                payload.historical_show_rate =
+                    parseFloat(
+                        document.getElementById(
+                            "historical_show_rate"
+                        ).value
+                    );
+
+                payload.duration_hours =
+                    parseInt(
+                        document.getElementById(
+                            "duration_hours"
+                        ).value
+                    );
+
+                payload.influencer_score =
+                    parseFloat(
+                        document.getElementById(
+                            "influencer_score"
+                        ).value
+                    );
+
+            } else {
+
+                payload.nearby_foot_traffic =
+                    parseInt(
+                        document.getElementById(
+                            "nearby_foot_traffic"
+                        ).value
+                    );
+
+                payload.foot_traffic_growth =
+                    parseInt(
+                        document.getElementById(
+                            "foot_traffic_growth"
+                        ).value
+                    );
+
+                payload.venue_visibility_score =
+                    parseFloat(
+                        document.getElementById(
+                            "venue_visibility_score"
+                        ).value
+                    );
+
+                payload.booth_count =
+                    parseInt(
+                        document.getElementById(
+                            "booth_count"
+                        ).value
+                    );
+
+                payload.live_performance_score =
+                    parseFloat(
+                        document.getElementById(
+                            "live_performance_score"
+                        ).value
+                    );
+
+                payload.transport_accessibility =
+                    parseFloat(
+                        document.getElementById(
+                            "transport_accessibility"
+                        ).value
+                    );
+            }
+
+            return payload;
+        }
+
+        // =========================================
+        // RUN
+        // =========================================
+
+        async function runPrediction() {
+
+            try {
+
+                const payload =
+                    buildPayload();
+
+                // =====================================
+                // SINGLE PREDICTION
+                // =====================================
+
+                const response =
+                    await fetch(
+                        "http://127.0.0.1:8000/predict",
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify(
+                                    payload
+                                )
+                        }
+                    );
+
+                const data =
+                    await response.json();
+
+                console.log(data);
+
+                // =====================================
+                // MAIN RESULT
+                // =====================================
+
+                document.getElementById(
+                    "predictionValue"
+                ).innerText =
+                    data.prediction.toLocaleString();
+
+                document.getElementById(
+                    "confidenceText"
+                ).innerText =
+                    `95% 信賴區間：${data.CI_95_lower.toLocaleString()} ~ ${data.CI_95_upper.toLocaleString()}`;
+
+                document.getElementById(
+                    "optimizedPrediction"
+                ).innerText =
+                    data.roi_optimization.optimized_prediction.toLocaleString();
+
+                // =====================================
+                // IMPROVEMENT
+                // =====================================
+
+                const improvement = (
+
+                    (
+                        data.roi_optimization
+                        .optimized_prediction
+
+                        - data.prediction
+                    )
+
+                    / data.prediction
+
+                    * 100
+
+                ).toFixed(1);
+
+                document.getElementById(
+                    "improvementPct"
+                ).innerText =
+                    `+${improvement}%`;
+
+                // =====================================
+                // TOP DRIVER
+                // =====================================
+
+                const sortedImportance =
+                    Object.entries(
+                        data.feature_importance
+                    )
+
+                    .sort(
+                        (a, b) =>
+                            b[1] - a[1]
+                    );
+
+                document.getElementById(
+                    "topDriver"
+                ).innerText =
+                    sortedImportance[0][0];
+
+                document.getElementById(
+                    "rewardValue"
+                ).innerText =
+                    payload.reward_score;
+
+                // =====================================
+                // ROI CHART
+                // =====================================
+
+                const roiCtx =
+                    document.getElementById(
+                        "roiChart"
+                    ).getContext("2d");
+
+                if (roiChart)
+                    roiChart.destroy();
+
+                roiChart = new Chart(
+                    roiCtx,
+                    {
+
+                        type: "bar",
+
+                        data: {
+
+                            labels: [
+                                "Current",
+                                "Optimized"
+                            ],
+
+                            datasets: [{
+
+                                label:
+                                    "Attendance",
+
+                                data: [
+
+                                    data.prediction,
+
+                                    data
+                                    .roi_optimization
+                                    .optimized_prediction
+                                ]
+                            }]
+                        },
+
+                        options: {
+
+                            responsive: true,
+
+                            maintainAspectRatio:
+                                false
+                        }
+                    }
+                );
+
+                // =====================================
+                // IMPORTANCE CHART
+                // =====================================
+
+                const impCtx =
+                    document.getElementById(
+                        "importanceChart"
+                    ).getContext("2d");
+
+                if (importanceChart)
+                    importanceChart.destroy();
+
+                importanceChart = new Chart(
+                    impCtx,
+                    {
+
+                        type: "bar",
+
+                        data: {
+
+                            labels:
+                                sortedImportance
+                                .map(x => x[0]),
+
+                            datasets: [{
+
+                                label:
+                                    "Importance",
+
+                                data:
+                                    sortedImportance
+                                    .map(x => x[1])
+                            }]
+                        },
+
+                        options: {
+
+                            indexAxis: "y",
+
+                            responsive: true,
+
+                            maintainAspectRatio:
+                                false
+                        }
+                    }
+                );
+
+                // =====================================
+                // TIMELINE
+                // =====================================
+
+                const timelineResponse =
+                    await fetch(
+                        "http://127.0.0.1:8000/forecast_timeline",
+                        {
+
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify(
+                                    payload
+                                )
+                        }
+                    );
+
+                const timelineData =
+                    await timelineResponse.json();
+
+                console.log(timelineData);
+
+                const timeline =
+                    timelineData.timeline;
+
+                const labels =
+                    timeline.map(
+                        x =>
+                        `D-${x.days_before_event}`
+                    );
+
+                const predictions =
+                    timeline.map(
+                        x => x.prediction
+                    );
+
+                const lower =
+                    timeline.map(
+                        x => x.CI_95_lower
+                    );
+
+                const upper =
+                    timeline.map(
+                        x => x.CI_95_upper
+                    );
+
+                const timeCtx =
+                    document.getElementById(
+                        "timelineChart"
+                    ).getContext("2d");
+
+                if (timelineChart)
+                    timelineChart.destroy();
+
+                timelineChart =
+                    new Chart(
+                        timeCtx,
+                        {
+
+                            type: "line",
+
+                            data: {
+
+                                labels: labels,
+
+                                datasets: [
+
+                                    {
+
+                                        label:
+                                            "Prediction",
+
+                                        data:
+                                            predictions,
+
+                                        tension: 0.3
+                                    },
+
+                                    {
+
+                                        label:
+                                            "CI Lower",
+
+                                        data:
+                                            lower,
+
+                                        borderDash:
+                                            [5, 5],
+
+                                        tension: 0.3
+                                    },
+
+                                    {
+
+                                        label:
+                                            "CI Upper",
+
+                                        data:
+                                            upper,
+
+                                        borderDash:
+                                            [5, 5],
+
+                                        tension: 0.3
+                                    }
+                                ]
+                            },
+
+                            options: {
+
+                                responsive: true,
+
+                                maintainAspectRatio:
+                                    false
+                            }
+                        }
+                    );
+
+            } catch (err) {
+
+                console.error(err);
+
+                alert(
+                    "API 連線失敗"
+                );
+            }
+        }
+
+        // =========================================
+        // INIT
+        // =========================================
+
+        window.onload = () => {
+
+            toggleFields();
+
+            runPrediction();
+        };
+
     </script>
+
 </body>
+
 </html>
