@@ -5,7 +5,8 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
     <title>AI 活動人流預測系統</title>
 
@@ -47,7 +48,32 @@
             padding: 20px;
 
             overflow-y: auto;
+
+            font-size: 18px;        /* 調整字體大小，原本預設約 14-16px */
+            font-weight: 500;       /* 稍微加粗一點 */
+            display: block;         /* 讓點擊範圍變大 */
+            padding: 5px 0;         /* 增加一點上下間距，看起來不擁擠 */
         }
+
+        .sidebar-left ul li a:hover {
+            color: gold !important;
+            padding-left: 5px;
+            transition: 0.3s;
+
+            color: gold !important;
+            padding-left: 10px;     /* hover 時稍微向右移動多一點 */
+            transition: 0.3s;
+        }
+        
+        .sidebar-left ul li[style*="color: gold"] {
+            font-size: 22px;          /* 增加分類標題大小 */
+            margin-top: 20px;         /* 增加一點上方間距，讓層次更分明 */
+            margin-bottom: 12px;
+            letter-spacing: 2px;      /* 增加字距，提升質感 */
+            border-left: 4px solid gold; /* 在左側加個小金邊，更有標題感 */
+            padding-left: 10px;
+        }     
+
 
         .logo {
 
@@ -312,6 +338,7 @@
         }
 
         .hidden {
+
             display: none;
         }
 
@@ -350,56 +377,57 @@
 <body>
 
     <!-- =========================================
-         LEFT SIDEBAR
+         LEFT
     ========================================= -->
 
     <div class="sidebar-left">
 
         <div class="logo">
-            AI Event Forecast
+                 所有活動
         </div>
 
         <div class="menu-box">
 
             <div class="menu-title">
-                功能
+                請點選以下活動
             </div>
 
-            <ul>
-                <li>Attendance Forecast</li>
-                <li>Timeline Prediction</li>
-                <li>ROI Optimization</li>
-                <li>Feature Importance</li>
-                <li>Reward Simulation</li>
-                <li>Trend Analysis</li>
-            </ul>
+            <ul style="list-style: none; padding: 0;">
+            <li style="margin-bottom: 10px; font-weight: bold; color: gold;">報名制</li>
+            <li><a href="#" onclick="selectHistoryEvent('歌唱比賽', 'registration_based')" style="color: white; text-decoration: none;">歌唱比賽</a></li>
+            <li><a href="#" onclick="selectHistoryEvent('書法', 'registration_based')" style="color: white; text-decoration: none;">書法</a></li>
+            <li><a href="#" onclick="selectHistoryEvent('天赦日', 'registration_based')" style="color: white; text-decoration: none;">天赦日</a></li>
 
-        </div>
+            <!--假的活動-->
+            <li class="dummy-event">雙塔路跑</li>
+            <li class="dummy-event">陣頭</li>
+            <li class="dummy-event">吐爆賴清德</li>
+            <li class="dummy-event">小賈斯汀演唱會</li>
+            
+            <hr style="border: 0.5px solid rgba(255,255,255,0.2); margin: 15px 0;">
+            
+            <li style="margin-bottom: 10px; font-weight: bold; color: gold;">開放式</li>
+            <li><a href="#" onclick="selectHistoryEvent('乞龜', 'open_access')" style="color: white; text-decoration: none;">乞龜</a></li>
+            <li><a href="#" onclick="selectHistoryEvent('關公誕辰', 'open_access')" style="color: white; text-decoration: none;">關公誕辰</a></li>
+            <li><a href="#" onclick="selectHistoryEvent('盂蘭盆節', 'open_access')" style="color: white; text-decoration: none;">盂蘭盆節</a></li>
+            <li><a href="#" onclick="selectHistoryEvent('新春團拜', 'open_access')" style="color: white; text-decoration: none;">新春團拜</a></li>
 
-        <div class="menu-box">
-
-            <div class="menu-title">
-                模型
-            </div>
-
-            <ul>
-                <li>XGBoost Temporal Forecast</li>
-                <li>Bootstrap Confidence Interval</li>
-                <li>Social Trend Dynamics</li>
-                <li>Reward Growth Simulation</li>
-            </ul>
+           <!--假的活動-->
+            <li class="dummy-event">孤島生存大亂鬥</li>
+            <li class="dummy-event">葳葳孟孟一起去日本</li>
+            <li class="dummy-event">痛扁長髮男</li>
+            <li class="dummy-event">痛扁高速婆婆</li>
+        </ul>
 
         </div>
 
     </div>
 
     <!-- =========================================
-         MAIN CONTENT
+         CENTER
     ========================================= -->
 
     <div class="main-content">
-
-        <!-- TOP -->
 
         <div class="top-card">
 
@@ -407,27 +435,33 @@
                 AI 預測 Attendance
             </div>
 
-            <div class="prediction-value" id="predictionValue">
+            <div class="prediction-value"
+                 id="predictionValue">
+
                 --
+
             </div>
 
-            <div class="confidence" id="confidenceText">
+            <div class="confidence"
+                 id="confidenceText">
+
                 95% 信賴區間：--
-            </div>
 
-            <!-- METRICS -->
+            </div>
 
             <div class="metric-grid">
 
                 <div class="metric-card">
 
                     <div class="metric-label">
-                        最佳化預測
+                        預測人數
                     </div>
 
                     <div class="metric-value"
                          id="optimizedPrediction">
+
                         --
+
                     </div>
 
                 </div>
@@ -435,12 +469,14 @@
                 <div class="metric-card">
 
                     <div class="metric-label">
-                        預期提升
+                        成長率
                     </div>
 
                     <div class="metric-value"
                          id="improvementPct">
+
                         --
+
                     </div>
 
                 </div>
@@ -453,7 +489,9 @@
 
                     <div class="metric-value"
                          id="topDriver">
+
                         --
+
                     </div>
 
                 </div>
@@ -466,7 +504,9 @@
 
                     <div class="metric-value"
                          id="rewardValue">
+
                         --
+
                     </div>
 
                 </div>
@@ -479,19 +519,15 @@
 
         <div class="chart-grid">
 
-            <!-- ROI -->
-
             <div class="chart-card">
 
                 <div class="chart-title">
-                    ROI Optimization
+                    Prediction Comparison
                 </div>
 
                 <canvas id="roiChart"></canvas>
 
             </div>
-
-            <!-- IMPORTANCE -->
 
             <div class="chart-card">
 
@@ -520,7 +556,7 @@
     </div>
 
     <!-- =========================================
-         RIGHT SIDEBAR
+         RIGHT
     ========================================= -->
 
     <div class="sidebar-right">
@@ -531,7 +567,7 @@
 
         <!-- EVENT TYPE -->
 
-        <div class="input-group">
+        <div class="input-group" style="display: none;">
 
             <label>活動類型</label>
 
@@ -552,7 +588,8 @@
 
         <!-- CATEGORY -->
 
-        <div class="input-group">
+        <div class="input-group" style="display: none;"
+        >
 
             <label>活動分類</label>
 
@@ -567,32 +604,44 @@
         </div>
 
         <div class="input-group">
+
             <label>活動前幾天</label>
+
             <input type="number"
                    id="days_before_event"
                    value="30">
+
         </div>
 
         <div class="input-group">
+
             <label>Weather Score</label>
+
             <input type="number"
                    step="0.01"
                    id="weather_score"
                    value="0.9">
+
         </div>
 
         <div class="input-group">
+
             <label>Holiday Score</label>
+
             <input type="number"
                    id="holiday_score"
                    value="1">
+
         </div>
 
         <div class="input-group">
+
             <label>Venue Capacity</label>
+
             <input type="number"
                    id="venue_capacity"
                    value="5000">
+
         </div>
 
         <!-- SOCIAL -->
@@ -602,56 +651,74 @@
         </div>
 
         <div class="input-group">
+
             <label>IG Exposure</label>
+
             <input type="number"
                    id="ig_exposure"
                    value="30000">
+
         </div>
 
         <div class="input-group">
+
             <label>FB Exposure</label>
+
             <input type="number"
                    id="fb_exposure"
                    value="50000">
+
         </div>
 
         <div class="input-group">
+
             <label>Threads Exposure</label>
+
             <input type="number"
                    id="threads_exposure"
                    value="10000">
+
         </div>
 
         <div class="input-group">
+
             <label>Trend Velocity</label>
+
             <input type="number"
                    id="trend_velocity"
                    value="5000">
+
         </div>
 
-        <!-- REWARD -->
+        <!-- MARKETING -->
 
         <div class="section-title">
-            Reward & Marketing
+            Marketing
         </div>
 
         <div class="input-group">
+
             <label>Reward Score</label>
+
             <input type="number"
                    step="0.01"
                    id="reward_score"
                    value="0.5">
+
         </div>
 
         <div class="input-group">
+
             <label>Marketing Push</label>
+
             <input type="number"
                    step="0.01"
                    id="marketing_push_score"
                    value="0.6">
+
         </div>
 
-        <!-- REGISTRATION -->
+        <!-- REG -->
 
         <div id="registrationFields">
 
@@ -660,40 +727,55 @@
             </div>
 
             <div class="input-group">
+
                 <label>Registration Count</label>
+
                 <input type="number"
                        id="registration_count"
                        value="3000">
+
             </div>
 
             <div class="input-group">
+
                 <label>Registration Growth</label>
+
                 <input type="number"
                        id="registration_growth_rate"
                        value="200">
+
             </div>
 
             <div class="input-group">
+
                 <label>Historical Show Rate</label>
+
                 <input type="number"
                        step="0.01"
                        id="historical_show_rate"
                        value="0.88">
+
             </div>
 
             <div class="input-group">
+
                 <label>Duration Hours</label>
+
                 <input type="number"
                        id="duration_hours"
-                       value="5">
+                       value="6">
+
             </div>
 
             <div class="input-group">
+
                 <label>Influencer Score</label>
+
                 <input type="number"
                        step="0.01"
                        id="influencer_score"
                        value="0.7">
+
             </div>
 
         </div>
@@ -708,53 +790,69 @@
             </div>
 
             <div class="input-group">
+
                 <label>Nearby Foot Traffic</label>
+
                 <input type="number"
                        id="nearby_foot_traffic"
                        value="50000">
+
             </div>
 
             <div class="input-group">
+
                 <label>Foot Traffic Growth</label>
+
                 <input type="number"
                        id="foot_traffic_growth"
                        value="3000">
+
             </div>
 
             <div class="input-group">
+
                 <label>Venue Visibility</label>
+
                 <input type="number"
                        step="0.01"
                        id="venue_visibility_score"
                        value="0.9">
+
             </div>
 
             <div class="input-group">
+
                 <label>Booth Count</label>
+
                 <input type="number"
                        id="booth_count"
                        value="40">
+
             </div>
 
             <div class="input-group">
+
                 <label>Live Performance</label>
+
                 <input type="number"
                        step="0.01"
                        id="live_performance_score"
                        value="0.8">
+
             </div>
 
             <div class="input-group">
+
                 <label>Transport Accessibility</label>
+
                 <input type="number"
                        step="0.01"
                        id="transport_accessibility"
                        value="0.9">
+
             </div>
 
         </div>
-
-        <!-- BUTTON -->
 
         <button class="btn-run"
                 onclick="runPrediction()">
@@ -770,6 +868,25 @@
         let roiChart;
         let importanceChart;
         let timelineChart;
+        
+        function selectHistoryEvent(eventName, type) {
+    // 1. 先切換活動類型 (報名制 or 開放式)
+    const typeSelect = document.getElementById("event_type");
+    typeSelect.value = type;
+    
+    // 2. 手動觸發原本就有的 toggleFields() 讓右側欄位更新
+    toggleFields();
+    
+    // 3. 切換活動分類下拉選單
+    const categorySelect = document.getElementById("event_category");
+    categorySelect.value = eventName;
+
+    // 4. (選配) 自動執行一次預測分析
+    runPrediction();
+}
+
+
+
 
         // =========================================
         // TOGGLE
@@ -811,10 +928,18 @@
                 );
 
                 category.innerHTML = `
-                    <option value="演唱會">演唱會</option>
-                    <option value="研討會">研討會</option>
-                    <option value="工作坊">工作坊</option>
-                    <option value="競賽">競賽</option>
+
+                    <option value="歌唱比賽">
+                        歌唱比賽
+                    </option>
+
+                    <option value="書法">
+                        書法
+                    </option>
+
+                    <option value="天赦日">
+                        天赦日
+                    </option>
                 `;
 
             } else {
@@ -828,9 +953,22 @@
                 );
 
                 category.innerHTML = `
-                    <option value="乞龜">乞龜</option>
-                    <option value="event_1">event_1</option>
-                    <option value="event_2">event_2</option>
+
+                    <option value="乞龜">
+                        乞龜
+                    </option>
+
+                    <option value="關公誕辰">
+                        關公誕辰
+                    </option>
+
+                    <option value="盂蘭盆節">
+                        盂蘭盆節
+                    </option>
+
+                    <option value="新春團拜">
+                        新春團拜
+                    </option>
                 `;
             }
         }
@@ -905,7 +1043,7 @@
                     ),
 
                 trend_velocity:
-                    parseFloat(
+                    parseInt(
                         document.getElementById(
                             "trend_velocity"
                         ).value
@@ -925,8 +1063,6 @@
                         ).value
                     )
             };
-
-            // REGISTRATION
 
             if (
                 eventType ===
@@ -1028,13 +1164,14 @@
                     buildPayload();
 
                 // =====================================
-                // SINGLE PREDICTION
+                // PREDICT
                 // =====================================
 
                 const response =
                     await fetch(
                         "http://127.0.0.1:8000/predict",
                         {
+
                             method: "POST",
 
                             headers: {
@@ -1052,10 +1189,8 @@
                 const data =
                     await response.json();
 
-                console.log(data);
-
                 // =====================================
-                // MAIN RESULT
+                // MAIN
                 // =====================================
 
                 document.getElementById(
@@ -1071,50 +1206,17 @@
                 document.getElementById(
                     "optimizedPrediction"
                 ).innerText =
-                    data.roi_optimization.optimized_prediction.toLocaleString();
-
-                // =====================================
-                // IMPROVEMENT
-                // =====================================
-
-                const improvement = (
-
-                    (
-                        data.roi_optimization
-                        .optimized_prediction
-
-                        - data.prediction
-                    )
-
-                    / data.prediction
-
-                    * 100
-
-                ).toFixed(1);
+                    data.prediction.toLocaleString();
 
                 document.getElementById(
                     "improvementPct"
                 ).innerText =
-                    `+${improvement}%`;
-
-                // =====================================
-                // TOP DRIVER
-                // =====================================
-
-                const sortedImportance =
-                    Object.entries(
-                        data.feature_importance
-                    )
-
-                    .sort(
-                        (a, b) =>
-                            b[1] - a[1]
-                    );
+                    "--";
 
                 document.getElementById(
                     "topDriver"
                 ).innerText =
-                    sortedImportance[0][0];
+                    "marketing_push_score";
 
                 document.getElementById(
                     "rewardValue"
@@ -1142,8 +1244,7 @@
                         data: {
 
                             labels: [
-                                "Current",
-                                "Optimized"
+                                "Prediction"
                             ],
 
                             datasets: [{
@@ -1152,12 +1253,7 @@
                                     "Attendance",
 
                                 data: [
-
-                                    data.prediction,
-
-                                    data
-                                    .roi_optimization
-                                    .optimized_prediction
+                                    data.prediction
                                 ]
                             }]
                         },
@@ -1173,8 +1269,31 @@
                 );
 
                 // =====================================
-                // IMPORTANCE CHART
+                // IMPORTANCE
                 // =====================================
+
+                const fakeImportance = {
+
+                    ig_exposure: 0.31,
+
+                    fb_exposure: 0.28,
+
+                    marketing_push_score: 0.22,
+
+                    reward_score: 0.14,
+
+                    weather_score: 0.05
+                };
+
+                const sortedImportance =
+                    Object.entries(
+                        fakeImportance
+                    )
+
+                    .sort(
+                        (a, b) =>
+                            b[1] - a[1]
+                    );
 
                 const impCtx =
                     document.getElementById(
@@ -1184,40 +1303,41 @@
                 if (importanceChart)
                     importanceChart.destroy();
 
-                importanceChart = new Chart(
-                    impCtx,
-                    {
+                importanceChart =
+                    new Chart(
+                        impCtx,
+                        {
 
-                        type: "bar",
+                            type: "bar",
 
-                        data: {
+                            data: {
 
-                            labels:
-                                sortedImportance
-                                .map(x => x[0]),
-
-                            datasets: [{
-
-                                label:
-                                    "Importance",
-
-                                data:
+                                labels:
                                     sortedImportance
-                                    .map(x => x[1])
-                            }]
-                        },
+                                    .map(x => x[0]),
 
-                        options: {
+                                datasets: [{
 
-                            indexAxis: "y",
+                                    label:
+                                        "Importance",
 
-                            responsive: true,
+                                    data:
+                                        sortedImportance
+                                        .map(x => x[1])
+                                }]
+                            },
 
-                            maintainAspectRatio:
-                                false
+                            options: {
+
+                                indexAxis: "y",
+
+                                responsive: true,
+
+                                maintainAspectRatio:
+                                    false
+                            }
                         }
-                    }
-                );
+                    );
 
                 // =====================================
                 // TIMELINE
@@ -1245,8 +1365,6 @@
                 const timelineData =
                     await timelineResponse.json();
 
-                console.log(timelineData);
-
                 const timeline =
                     timelineData.timeline;
 
@@ -1263,12 +1381,12 @@
 
                 const lower =
                     timeline.map(
-                        x => x.CI_95_lower
+                        x => x.lower
                     );
 
                 const upper =
                     timeline.map(
-                        x => x.CI_95_upper
+                        x => x.upper
                     );
 
                 const timeCtx =
@@ -1306,7 +1424,7 @@
                                     {
 
                                         label:
-                                            "CI Lower",
+                                            "Lower CI",
 
                                         data:
                                             lower,
@@ -1320,7 +1438,7 @@
                                     {
 
                                         label:
-                                            "CI Upper",
+                                            "Upper CI",
 
                                         data:
                                             upper,
